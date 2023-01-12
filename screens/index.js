@@ -1,296 +1,203 @@
-// @ts-nocheck
-import React, { useEffect, useState } from "react";
-import {
-    Text,
-    View,
-    StyleSheet,
-    Image,
-    TextInput,
-    Pressable,
-    ScrollView
-} from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import { getUserInfo } from "../../store";
+import * as React from "react";
+import { Text, View, Image, ScrollView, StyleSheet, TouchableHighlight } from "react-native";
 
-const AccountScreen = () => {
-    const dispatch = useDispatch();
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [userAddress, setUserAddress] = useState("");
+const pressed = () => {
+  console.log("pressed");
+};
 
-    const userInfo = useSelector(state => state?.ecommerce?.user);
-
-    const handleGetUser = async () => {
-        await dispatch(getUserInfo()).then((res) => { }).catch((err) => console.log(err))
-    }
-
-    useEffect(() => {
-        if (!userInfo) {
-            handleGetUser()
-        }
-    }, [])
-
-
-    return (
-        <View style={styles.container}>
-            <ScrollView>
-                <View style={styles.profileContainer}>
-                    <Image source={require("./assets/profilePicture.png")} style={styles.profilePicture} />
-                    <Text style={styles.profileName}>{userInfo?.username}</Text>
-                    <Text style={styles.profilemail}>{userInfo?.email}</Text>
-                </View>
-
-                <View style={[styles.accountHeadings]}>
-                    <Text style={styles.inputText1}>Edit Account</Text>
-                    <Text style={[styles.inputText1, { color: "#EA4335" }]}>Delete Account</Text>
-                </View>
-
-                <View style={styles.inputs}>
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.inputText}>First name</Text>
-                        <TextInput
-                            style={styles.input}
-                            onChangeText={(text) => setFirstName(text)}
-                            value={userInfo?.first_name}
-                            placeholder="Enter"
-                            placeholderTextColor="#000"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                        />
-
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.inputText}>Last Name</Text>
-                        <TextInput
-                            style={styles.input}
-                            onChangeText={(text) => setLastName(text)}
-                            value={userInfo?.last_name}
-                            placeholder="Enter"
-                            placeholderTextColor="#000"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                        />
-
-                    </View>
-                    <View style={styles.inputContainer}>
-                        <Text style={styles.inputText}>Address 1</Text>
-                        <TextInput
-                            style={styles.input}
-                            onChangeText={(text) => setUserAddress(text)}
-                            placeholder="Enter"
-                            placeholderTextColor="#000"
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                        />
-                    </View>
-                </View>
-                <Text style={styles.connectAcc}>Connected accounts</Text>
-                <View style={styles.subHeader}>
-                    <View style={styles.mainContainer}>
-                        <Image
-                            // @ts-ignore
-                            source={require("./assets/btnSigninwithApple.png")}
-                            style={styles.dot}
-                        />
-                        <View>
-                            <View style={styles.orderStatusContainer}>
-                                <Text style={styles.statusHeading}>Apple</Text>
-                                <Text style={[styles.statusHeading, styles.statusTime]}>Connected</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={styles.mainContainer}>
-                        <Image
-                            // @ts-ignore
-                            source={require("./assets/btnSigninwithGoogle.png")}
-                            style={styles.dot}
-                        />
-                        <View>
-                            <View style={styles.orderStatusContainer}>
-                                <Text style={styles.statusHeading}>Google</Text>
-                                <Text style={[styles.statusHeading, styles.statusTime]}>Connected</Text>
-                            </View>
-                        </View>
-                    </View>
-                    <View style={[styles.mainContainer, styles.borderNull]}>
-                        <Image
-                            // @ts-ignore
-                            source={require("./assets/btnSigninwithFacebook.png")}
-                            style={styles.dot}
-                        />
-                        <View>
-                            <View style={styles.orderStatusContainer}>
-                                <Text style={styles.statusHeading}>Facebook</Text>
-                                <Text style={[styles.statusHeading, styles.statusTime]}>Connected</Text>
-                            </View>
-                        </View>
-                    </View>
-                </View>
-
-                <Button buttonText={"Update"} />
-            </ScrollView>
+const ActivityFeedScreen = () => {
+  return (
+    <ScrollView>
+      <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <ProfileImage />
+          <Text style={styles.headerText}>Jay Mahanga</Text>
+          <Text style={styles.headerSubText}>jay@gmail.com</Text>
         </View>
-    );
+        <View style={styles.followingSection}>
+          <View style={styles.textarea}>
+            <Image style={styles.postIcon} source={require("./assets/posts.png")} />
+            <Text>My post</Text>
+          </View>
+          <View style={styles.textarea}>
+            <Image style={styles.followingIcon} source={require("./assets/following.png")} />
+            <Text style={styles.followingText}>Following</Text>
+          </View>
+        </View>
+
+        <View style={styles.pt30}>
+          <View style={styles.galleryRow}>
+            <View style={styles.smallPost}>
+              <Post onPress={pressed}/>
+            </View>
+            <View style={styles.smallPost}>
+              <Post onPress={pressed}/>
+            </View>
+            <View style={styles.smallPost}>
+              <Post onPress={pressed}/>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.pt10}>
+          <View style={styles.galleryRow}>
+            <View style={styles.columnRow}>
+              <View style={styles.smallPostcolumn}>
+                <Post />
+              </View>
+              <View style={styles.smallPostcolumn}>
+                <Post />
+              </View>
+            </View>
+            <View style={styles.largePost}>
+              <Post />
+            </View>
+          </View>
+        </View>
+      </View>
+    </ScrollView>
+  );
 };
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff"
+
+  container: {
+    padding: 10,
+    height: "100%",
+    backgroundColor: "white"
+  },
+
+  followingSection: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    paddingLeft: 30,
+    paddingRight: 30,
+    paddingTop: 20
+
+  },
+  headerContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignSelf: "center",
+    alignItems: "center"
+  },
+  headerText: {
+    marginTop: 15,
+    fontSize: 16,
+    fontWeight: "bold"
+  },
+  headerSubText: {
+    marginTop: 5,
+    fontSize: 12,
+    color: "#C4C4C4"
+  },
+  postIcon: {
+    width: 15,
+    height: 15,
+    marginBottom: 5,
+
+    shadowColor: "#0000",
+    shadowOffset: {
+      width: 0,
+      height: 2
     },
-    profileContainer: {
-        justifyContent: "center",
-        alignItems: "center",
-        paddingTop: 15
-    },
-    profilePicture: {
-        width: 82,
-        height: 82,
-        borderRadius: 40
-    },
-    profileName: {
-        fontSize: 20,
-        marginTop: 10
-    },
-    profilemail: {
-        fontSize: 14,
-        color: "grey"
-    },
-    inputs: {
-        marginTop: 20,
-        paddingHorizontal: 20
-    },
-    inputContainer: {
-        flexDirection: "column",
-        justifyContent: "center"
-    },
-    inputText: {
-        fontSize: 13,
-        marginLeft: 20,
-        color: "#111112"
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: "#e6e6e6",
-        borderRadius: 10,
-        padding: 10,
-        paddingLeft: 20,
-        marginVertical: 10,
-        width: "100%",
-        height: 50,
-        backgroundColor: "#f9f9f9"
-    },
-    lockIcon: {
-        position: "absolute",
-        right: 20,
-        top: 40,
-        width: 20,
-        height: 20,
-        resizeMode: "contain"
-    },
-    bottomTextContainer: {
-        flexDirection: "row",
-        justifyContent: "center",
-        marginHorizontal: 20,
-        marginTop: 40
-    },
-    bottomText: {
-        fontSize: 12,
-        textAlign: "center",
-        marginHorizontal: 20
-    },
-    accountHeadings: {
-        justifyContent: "space-between",
-        flexDirection: "row",
-        marginHorizontal: 30,
-        paddingVertical: 15,
-        borderBottomColor: "rgba(51, 51, 51, 0.05)",
-        borderBottomWidth: 1,
-        marginTop: 10
-    },
-    inputText1: {
-        fontSize: 15,
-        color: "#12D790"
-    },
-    connectAcc: { fontSize: 14, fontWeight: "bold", color: "#000", paddingHorizontal: 30, marginVertical: 10 },
-    subHeader: {
-        backgroundColor: "#F9F9F9",
-        paddingHorizontal: 30,
-        paddingTop: 10,
-        paddingBottom: 15
-    },
-    mainContainer: {
-        justifyContent: "flex-start",
-        flexDirection: "row",
-        paddingHorizontal: 10,
-        alignItems: "center",
-        marginTop: 10,
-        borderBottomColor: "rgba(51, 51, 51, 0.05)",
-        borderBottomWidth: 1,
-        paddingBottom: 10
-    },
-    borderNull: { borderBottomWidth: 0 },
-    dot: { height: 16, width: 16, resizeMode: "contain", marginLeft: -10 },
-    orderStatusContainer: {
-        justifyContent: "space-between",
-        flexDirection: "row",
-        alignItems: "center",
-        paddingLeft: 10,
-        paddingRight: 8,
-    },
-    statusHeading: { fontSize: 14, width: "50%", color: "#222222" },
-    statusText: { paddingHorizontal: 10, fontSize: 10, color: "#2A2B2E" },
-    statusTime: { textAlign: 'right', color: "#12D790", fontWeight: "bold" },
+    shadowOpacity: 1.3,
+    shadowRadius: 3.84
+
+  },
+  followingIcon: {
+    width: 15,
+    height: 15,
+    marginBottom: 5
+  },
+  textarea: {
+    display: "flex",
+    alignItems: "center"
+  },
+  followingText: {
+    fontSize: 14,
+    color: "#C4C4C4"
+  },
+  pt30: {
+    paddingTop: 30
+  },
+  pt10: {
+    paddingTop: 5
+  },
+  galleryRow: {
+    display: "flex",
+    flexDirection: "row"
+  },
+  smallPost: {
+    height: 120,
+    width: "33%",
+    paddingHorizontal: 3
+  },
+  columnRow: {
+    width: "33%"
+  },
+  smallPostcolumn: {
+    height: 120,
+    width: "100%",
+    padding: 3
+  },
+  largePost: {
+    height: 240,
+    width: "67%",
+    padding: 3
+  }
 });
 
-export default AccountScreen;
+export default ActivityFeedScreen;
 
-
-
-const Button = (params) => {
-    const btnStyle = {
-        backgroundColor: params.outline ? "#fff" : "#000",
-        borderColor: params.outline ? "#000" : "#fff",
-        borderWidth: 1
-    };
-    const btnText = {
-        color: params.outline ? "#000" : "#fff"
-    };
-    return (
-        <View style={buttonStyles.btnContainer}>
-            <Pressable style={[buttonStyles.btn, btnStyle]} onPress={params.onPress}>
-                <Text style={[buttonStyles.btnText, btnText]}>{params.buttonText}</Text>
-                <View style={buttonStyles.childrenContainer}>{params.children}</View>
-            </Pressable>
-        </View>
-    );
+const Post = (props) => {
+  return (
+    <TouchableHighlight onPress={props.onPress} style={postStyles.galleryPost} underlayColor='#DDDDDD'>
+        <Image style={postStyles.editIcon} source={require("./assets/edit.png")} />
+    </TouchableHighlight>
+  );
 };
 
-const buttonStyles = StyleSheet.create({
-    btnContainer: {
-        paddingHorizontal: 40,
-        justifyContent: "center",
-        marginVertical: 20
-    },
-    btn: {
-        backgroundColor: "black",
-        height: 50,
-        width: "100%",
-        padding: 10,
-        paddingHorizontal: 25,
-        borderRadius: 10,
-        justifyContent: "center",
-        alignItems: "center",
-        shadowColor: "rgba(0, 0, 0, 0.2)",
-        elevation: 10,
-        flexDirection: "row"
-    },
-    btnText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold"
-    },
-    childrenContainer: {
-        justifyContent: "center",
-        alignItems: "center"
-    }
+const postStyles = StyleSheet.create({
+  galleryPost: {
+    borderRadius: 10,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#FCF1D6",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 5
+  },
+  editIcon: {
+    height: 35,
+    width: 35
+  }
+
+});
+
+const ProfileImage = (props) => {
+  return (
+    <TouchableHighlight onPress={props.onPress} underlayColor='#DDDDDD'>
+      <View style={imageStyles.container}>
+        <Image style={imageStyles.image} resizeMode="contain" source={require("./assets/edit.png")} />
+      </View>
+    </TouchableHighlight>
+  );
+};
+
+const imageStyles = StyleSheet.create({
+  container: {
+    backgroundColor: "lightgray",
+    height: 70,
+    width: 70,
+    borderRadius: 35,
+    display: "flex",
+    alignItems: "center"
+  },
+  image: {
+    width: 20,
+    marginTop: 4
+  }
 });
